@@ -1,0 +1,395 @@
+﻿@model mvuyelwafitness.Models.CartVm
+@{
+    ViewBag.Title = "Checkout";
+
+    double orderTotal = 0;
+    double deliveryFee = 125;
+    double discount = 0;
+    var customer = Model.myCustomer[0];
+
+}
+
+<!--Totals Calculations-->
+@foreach (var itm in Model.Cart)
+{
+    double lineT = 0;
+    foreach (var prod in Model.Prod.Where(p => p.PROD_ID == itm.PROD_ID))
+    {
+        lineT = Convert.ToDouble(itm.Quantity) * Convert.ToDouble(prod.Price);
+    }
+    orderTotal += lineT;
+}
+
+<style>
+    .dis {
+        pointer-events: none;
+        border-style: solid;
+        border-width: 0.1px;
+        border-color: grey;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+        background-color: #e9f1f1;
+    }
+</style>
+<div class="container">
+    <br />
+    <h2>Checkout</h2>
+    <hr />
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Shipping-Options &nbsp; <i class="fa fa-truck"></i></h6>
+                    <hr />
+                    <form>
+                        <div class="form-group">
+                            <label for="pr-delivery">Delivery (Fee R 125.00): &nbsp;&nbsp;</label>
+                            <input type="radio" onclick="checkShipping()" style="position: relative; top: 10px;" class="float-right" id="pr-delivery" name="procurementOption" /><br />
+
+                            <label for="pr-pickUp">Pick-Up: &nbsp;&nbsp;</label>
+                            <input type="radio" onclick="checkShipping()" style="position: relative; top: 10px;" class="float-right" id="pr-pickUp" name="procurementOption" />
+                        </div>
+                    </form>
+                    <hr />
+                    <div id="shipping-address" style="display: none; transition: ease-in 0.3s;">
+                        <h6>Shipping Address: &nbsp; <i class="fa fa-pin"></i></h6>
+                        <label>Select delivery address</label>
+                        <select class="form-control" id="delivery address">
+                            @foreach (var address in Model.Deliveryaddress)
+                            {
+                                <option value="@address.ADDRESS_ID">@address.Street_add, @address.Town_City, @address.Province, @address.Zip</option>
+                            }
+                        </select>
+                        <br />
+                        <button type="button" data-target="#newAddress" data-toggle="modal" class="btn btn-sm btn-secondary">New Address</button>
+                        <hr />
+                    </div>
+
+                    <h6>Order Summary: &nbsp; <i class="fa fa-list"></i></h6>
+                    <hr />
+                    <p>
+                        @foreach (var itm in Model.Cart)
+                        {
+
+                            foreach (var prod in Model.Prod.Where(p => p.PROD_ID == itm.PROD_ID))
+                            {
+                                <span>X @itm.Quantity</span> @prod.Name <span class="float-right">R @prod.Price</span> <br />
+
+
+                            }
+
+                        }
+
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    @{
+                        double tax = ((orderTotal + deliveryFee) - discount) * 0.15;
+                        double subTotal = ((orderTotal + deliveryFee) - discount) - tax;
+                        double finaltotal = (orderTotal + deliveryFee) - discount;
+                    }
+                    <label>Order-total:  </label><span class="float-right" id="orderTotal"></span><br />
+                    <label>Delivery: </label><span class="float-right" id="deliveryTotal"></span><br />
+                    <label>Discount: </label><span class="float-right" id="discount" style="color: red;"></span><br />
+                    <label>Sub-Total: </label><span class="float-right" id="subTotal"><b></b></span><br />
+                    <label>Tax: </label><span class="float-right" id="tax"></span>
+
+                    <hr />
+                    <label>Total: </label><span class="float-right" id="finalTotal"></span>
+                    
+                    <div id="payDiv" style="display: none">
+                        <button type="button" class="btn mvbuttongreen" onclick="makepayment()">Make Payment</button>
+                        <br /><br />
+                        <a href="https://payfast.io"><i class="fa fa-lock"></i> Payments by Payfast</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Make Payment modal -->
+<div class="modal fade" id="Paynow" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="addModalTitle">Confirm Payment</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="PayFastPayNowForm" action="https://www.payfast.co.za/eng/process" method="post">
+                    <input required type="hidden" name="cmd" value="_paynow">
+                    <input required type="hidden" name="receiver" pattern="[0-9]" value="22482048">
+                    <input type="hidden" name="return_url" value="https://mvuyelwafitness.co.za/ErrorHandlers/SuccessfullOrder">
+                    <input type="hidden" name="cancel_url" value="https://mvuyelwafitness.co.za/ErrorHandlers/Canceled">
+                    <input type="hidden" name="notify_url" value="https://mvuyelwafitness.co.za">
+                    <div class="form-group">
+                        <label id="PayFastAmountLabel" style="pointer-events: none;" for="PayFastAmount">Total amount due: </label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">R</span>
+                            </div>
+                            <input required id="PayFastAmount" type="number" class="form-control dis" step=".01" name="amount" min="5.00" placeholder="5.00" value="">
+                        </div>
+                    </div>
+
+                    <input required type="hidden" name="item_name" maxlength="255" value="Mvuyelwafitness - payment">
+
+                    <div class="row row-cols-2">
+                        <div class="col-sm-10">
+                            <input type="image" src="~/assets/pay-now.jpeg" onclick="showLoader(); SendConfirmEmail();" class="text-center" style="background-color: #DEE965; border-color: #DEE965; width: 30%;" value="Pay Now" alt="Pay Now" title="Pay Now with Payfast">
+                        </div>
+                        <div class="col-sm-2 text-center" style="display: flex; align-items: center; align-content: center; left: -10px;">
+                            <h4><i class="fa fa-lock"></i></h4>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- new address modal -->
+<div class="modal fade" id="newAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="addModalTitle">Add Address</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editFrm">
+                <div class="modal-body">
+                    <h4>Address:</h4>
+                    <div class="form-group">
+                        <label for="newstraddress">Street Address:<span style="color: red;">*</span></label>
+                        <input type="text" class="form-control frm-field" name="newstraddress" id="newstraddress" placeholder="Street address..." required />
+                    </div>
+                    <div class="form-group">
+                        <label for="newtown">Town / City:<span style="color: red;">*</span></label>
+                        <input type="text" class="form-control frm-field" name="newtown" id="newtown" placeholder="Town / City..." required />
+                    </div>
+                    <div class="form-group">
+                        <label for="newprovince">Province:<span style="color: red;">*</span></label>
+                        <select type="text" class="form-control" name="newprovince" id="newprovince" required>
+                            <option value="Select Province">Select Province</option>
+                            <option value="Eastern Cape">Eastern Cape</option>
+                            <option value="Free State">Free State</option>
+                            <option value="Gauteng">Gauteng</option>
+                            <option value="Kwazulu-Natal">Kwazulu-Natal</option>
+                            <option value="Limpopo">Limpopo</option>
+                            <option value="Mpumalanga">Mpumalanga</option>
+                            <option value="Northern Cape">Northern Cape</option>
+                            <option value="North West">North West</option>
+                            <option value="Western Cape">Western Cape</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newzip">Zip-Code:<span style="color: red;">*</span></label>
+                        <input type="number" min="0" max="99999" class="form-control frm-field" name="newzip" id="newzip" placeholder="Zip-Code..." required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="addNewAddress()" class="btn mvbuttongreen-sm">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    var deliverPackage = document.getElementById("pr-delivery");
+    var collectPackage = document.getElementById("pr-pickUp");
+    var deliveryAddressDiv = document.getElementById("shipping-address");
+    var payNow = document.getElementById("payDiv");
+    var myDiv = document.getElementById('loader-bg');
+
+    //order calculations
+    var orderTotal = document.getElementById('orderTotal');
+    var deliveryTotal = document.getElementById("deliveryTotal");
+    var discount = document.getElementById("discount");
+    var subTotal = document.getElementById("subTotal");
+    var tax = document.getElementById("tax");
+    var finalTotal = document.getElementById("finalTotal");
+
+    function showLoader() {
+        myDiv.style.opacity = 1;
+        myDiv.style.zIndex = 9999;
+    }
+    checkShipping();
+
+    function makepayment() {
+        var address = "";
+        showLoader();
+
+        var currentsess = localStorage.getItem("currentSession");
+        var neworCurrentsessionId = "";
+
+        if (currentsess) {
+            //dont create
+            neworCurrentsessionId = currentsess;
+        } else {
+            //Generate a session id
+            var min = 100000000; // Minimum 9-digit number (100,000,000)
+            var max = 999999999; // Maximum 9-digit number (999,999,999)
+            var sessionId = Math.floor(Math.random() * (max - min + 1)) + min;
+            localStorage.setItem("currentSession", sessionId);
+            neworCurrentsessionId = sessionId;
+        }
+
+
+
+        if (deliverPackage.checked) {
+            address = $("#delivery address").val();
+        }
+        else {
+            address = "Pick-up method is selected.";
+        }
+        $.post({
+            url: "@Url.Action("CreatenewOrder", "Store")",
+            data:{
+                custId: "@customer.CUSTOMER_ID",
+                orderTotal: "@finaltotal",
+                maddress: address,
+                session: neworCurrentsessionId
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+
+                if (msg.message == "success") {
+                    myDiv.style.opacity = 0;
+                    myDiv.style.zIndex = 0;
+                    $("#Paynow").modal('show');
+                }
+                else if (msg.message = "Exists") {
+                    myDiv.style.opacity = 0;
+                    myDiv.style.zIndex = 0;
+                    $("#Paynow").modal('show');
+                }
+                else {
+                    alert(msg.message);
+                }
+
+            },
+            error: () => {
+                alert("Error! please contact support");
+                window.location.reload();
+            }
+        });
+    }
+
+
+    function checkShipping() {
+        var delivery = 0;
+        var subTOT = 0;
+        var x = 0;
+        var finalAmountToPay = document.getElementById("PayFastAmount");
+
+        if (deliverPackage.checked) {
+
+            deliveryAddressDiv.style.transition = "ease-in 0.2s";
+            deliveryAddressDiv.style.display = "block";
+            payNow.style.display = "block";
+
+            //calculations
+            subTOT = ((@orderTotal + @deliveryFee) - @discount) - @tax;
+
+            orderTotal.innerHTML = "R @orderTotal";
+            discount.innerHTML = "R -@discount";
+            tax.innerHTML = "R @tax";
+
+            deliveryTotal.innerHTML = "R @deliveryFee";
+            subTotal.innerHTML = `R ${subTOT}`;
+            x = @finaltotal;
+
+            finalTotal.innerHTML = `<b>R ${x.toFixed(2)}</b>`;
+            finalAmountToPay.value = `${x.toFixed(2)}`;
+        }
+        else if (collectPackage.checked) {
+
+            deliveryAddressDiv.style.transition = "ease-in 0.2s";
+            deliveryAddressDiv.style.display = "none";
+            payNow.style.display = "block";
+
+            //calculations
+            subTOT = (@orderTotal - @discount) - @tax;
+
+            orderTotal.innerHTML = "R @orderTotal";
+            discount.innerHTML = "R -@discount";
+            tax.innerHTML = "R @tax";
+
+            deliveryTotal.innerHTML = "R 0.00"
+            subTotal.innerHTML = `R ${subTOT.toFixed(2)}`;
+            x = @orderTotal - @discount;
+
+            finalTotal.innerHTML = `<b>R ${x.toFixed(2)}</b>`;
+            finalAmountToPay.value = `${x.toFixed(2)}`;
+
+        } else {//calculations
+            subTOT = (@orderTotal - @discount) - @tax;
+
+            orderTotal.innerHTML = "R @orderTotal";
+            discount.innerHTML = "R -@discount";
+            tax.innerHTML = "R @tax";
+
+            deliveryTotal.innerHTML = "R 0.00"
+            subTotal.innerHTML = `R ${subTOT}`;
+            x = @orderTotal - @discount;
+
+            finalTotal.innerHTML = `<b>R ${x.toFixed(2)}</b>`;
+            finalAmountToPay.value = `${x.toFixed(2)}`;
+        }
+    }
+
+    function SendConfirmEmail() {
+        $.post({
+            url: "@Url.Action("SendConfirmEmail", "Store")",
+            data: {
+                custId: "@customer.CUSTOMER_ID",
+                mydate: "",
+                address: $("#delivery address").val(),
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+                alert(msg.message);
+                window.location.reload();
+            },
+            error: () => {
+                alert("Please make sure all fields and values are filled in correctly");
+            }
+        });
+    }
+
+    function addNewAddress() {
+        showLoader();
+        $.post({
+            url: "@Url.Action("AddAddress", "UserAccount")",
+            data: {
+                email: "@Model.myCustomer[0].Email",
+                strAddress: $("#newstraddress").val(),
+                town: $("#newtown").val(),
+                province: $("#newprovince").val(),
+                zip: $("#newzip").val()
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+                alert(msg.message);
+                window.location.reload();
+            },
+            error: () => {
+                alert("Please make sure all fields and values are filled in correctly");
+            }
+        });
+    }
+</script>

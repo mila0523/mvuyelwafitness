@@ -1,0 +1,90 @@
+﻿/*colors*/
+
+/*buttons Green : #*/
+/*buttons Grey: #89c756*/
+
+.qty {
+    padding:3px 10px 3px 10px;
+    width: fit-content;
+}
+
+.image-div {
+    height: 13.5rem;
+    padding-bottom: 5px;
+}
+
+
+.card-shop {
+    padding: 15px 15px 15px 15px;
+    border-style: solid;
+    border-color: #33322b;
+    height: 24rem;
+}
+
+.card-foot {
+    position: absolute;
+    bottom: 15px;
+}
+
+.card-header {
+    height: 30px;
+}
+
+.myfrmContol {
+    padding: 8px;
+    width: 60%;
+}
+
+.my-shop-search {
+    padding-left: 10px;
+    padding-right: 10px;
+    position: relative;
+    top: 10px;
+    width: inherit;
+}
+
+.removebtn {
+    text-decoration: none;
+    transition: ease-in 0.2s;
+    color: black;
+    font-size: 20px;
+    width: 100%;
+}
+
+.removebtn:hover{
+    text-decoration: none;
+    color: red;
+}
+
+@media only screen and (max-width: 1000px) {
+    .prodName {
+        font-size: 12.5px;
+    }
+
+    .mvbuttongreen-sm {
+        text-decoration: none;
+        font-size: 12px;
+        padding: 2px 5px 2px 5px;
+        color: white;
+        background-color: #6ab32e;
+        border-style: solid;
+        border-color: #6ab32e;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        transition: ease-in 0.2s;
+    }
+
+    .card-shop {
+        padding: 15px 15px 15px 15px;
+        border-style: solid;
+        border-color: #33322b;
+        height: 24rem;
+    }
+    .qty {
+        padding: 3px;
+        width: fit-content;
+    }
+
+    .qtyHead {
+        width: 135px;
+    }
+}

@@ -1,0 +1,137 @@
+﻿@model mvuyelwafitness.Models.Products_VM
+@{
+    ViewBag.Title = "Wishlist";
+
+}
+
+@if (Model.CustWishlist.Count == 0)
+{
+    <div class="container">
+        <div class="col-sm-12">
+            <br />
+            <h4>Wishlist <span class="float-right"><i class="fa fa-heart"></i></span></h4>
+            <hr />
+            <h5>There are no items in your wish list.</h5>
+            <a href="/Store/Store" type="button" class="btn mvbuttongreen-sm">Start Shopping <i class="fa fa-shopping-cart"></i></a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <br />
+        <h4>Wishlist </h4>
+        <hr />
+        @foreach (var Wprod in Model.CustWishlist)
+        {
+            foreach (var prod in Model.ProductByFilter.Where(p => p.PROD_ID == Wprod.PROD_ID))
+            {
+                <div id="crd-@prod.PROD_ID" class="card" style="transition: ease-in 0.3s;">
+                    <div class="card-body">
+                        <div class="row row-cols-2">
+                            <div class="col-sm-2">
+                                @if (prod.image == null)
+                                {
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png" alt="image" width="80px" />
+                                }
+                                else
+                                {
+                                    <img src="data:image/jpeg;base64, @prod.image" alt="image" width="80px" />
+                                }
+                            </div>
+                            <div class="col-sm-7">
+                                <h4>@prod.Name</h4>
+                                <p>Category: @prod.Category</p>
+                                <h6>R @prod.Price</h6>
+                            </div>
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-2">
+                                <div class="btn-group">
+                                    <button type="button" id="@prod.PROD_ID" onclick="addtoCart(this.id)" class="btn mvbuttongreen-sm"><i class="fa fa-shopping-cart"></i></button>
+                                    <button type="button" id="@Wprod.LIST_ID" onclick="removeFromWishlist(this.id)" class="btn btn-sm btn-danger">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+    </div>
+
+    <div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-header">
+                <strong class="mr-auto">Message</strong>
+                <small>Now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                <p id="mytoastMessage"></p>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<script type="text/javascript">
+
+    function showLoader() {
+        var myDiv = document.getElementById('loader-bg');
+        myDiv.style.opacity = 1;
+        myDiv.style.zIndex = 9999;
+    }
+    function removeFromWishlist(listId) {
+        if (listId) {
+            showLoader();
+            $.post({
+                url: "@Url.Action("RemoveFromWishList", "Store")",
+                data: {
+                    ListID: listId,
+                },
+                success: (data) => {
+                    let msg = JSON.parse(data);
+
+                    if (msg.message == "success") {
+                        window.location.reload();
+                    }
+                    else {
+                      alert(msg.message);
+                    }
+                },
+                error:() => {
+                    alert("Failed, cannot remove item. please contact support.");
+                }
+            });
+        }
+        else {
+            alert("Failed, cannot remove item. please contact support.")
+        }
+    }
+
+    function addtoCart(prodId) {
+        var custEmail = localStorage.getItem("userEmail");
+        showLoader();
+        $.post({
+            url: "@Url.Action("AddTOCart", "Store")",
+            data: {
+                email: custEmail,
+                productID: prodId,
+            },
+                success: (data) => {
+                let msg = JSON.parse(data);
+                $('#liveToast').toast('show')
+                $("#mytoastMessage").text(msg.message);
+                window.location.reload();
+            },
+            error: (data) => {
+                let msg = JSON.parse(data);
+                $("#mytoastMessage").text(msg.message);
+            }
+        });
+    }
+
+</script>

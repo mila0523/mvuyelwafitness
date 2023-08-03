@@ -1,0 +1,172 @@
+﻿@model mvuyelwafitness.Models.Products_VM
+@{
+    ViewBag.Title = "Store";
+}
+
+<link rel="stylesheet" href="~/Content/shop.css" />
+
+<center>
+    <div class="my-shop-search" style="width: 100%; ; padding-top: 10px; margin: auto;" onclick="closeDropDown()">
+        <div class="row">
+            <div class="col-sm-12">
+                <input type="text" class="myfrmContol" id="filterString" name="filterString" placeholder="Search Product...">
+                <button type="button" class="mvbuttongreen">Search</button>
+            </div>
+        </div>
+    </div>
+</center>
+<hr />
+
+
+<div class="container">
+    <div class="alert alert-primary alert-dismissible fade show" id="btAlert" role="alert">
+        <div id="responseMessage">
+        </div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="dropdown float-right">
+        <button onclick="openDropDown()" class="mvbuttongreen-sm">Filter <i class="fa fa-caret-down"></i></button>
+        <div id="myDropdown" class="dropdown-content">
+            @foreach (var category in Model.Categories.GroupBy(p => p.Category).Select(r => r.First()))
+            {
+                <a class="dropdown-item" href="#" onclick="@("window.location.href='" + @Url.Action("Store", "Store", new { filterString = category.Category}) + "'")">@category.Category</a>
+            }
+            <a class="dropdown-item" style="color: red;" href="/Store/Store">clear filters &times;</a>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row row-cols-2" onclick="closeDropDown()">
+        @foreach (var prod in Model.ProductByFilter)
+        {
+            <div class="col-lg-3" style="padding-bottom: 15px;">
+                <div class="card card-shop"> 
+                    <div style="height: 3rem;">
+                        <p class="prodName">@prod.Name</p>
+
+                    </div><br />
+                    <div class="center image-div">
+
+                        @if (prod.image == null)
+                        {
+                            <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png" alt="image" height="100%" />
+                        }
+                        else
+                        {
+                            <img class="card-img-top" src="data:image/jpeg;base64, @prod.image" alt="image" height="100%" />
+                        }
+                    </div>
+                    <p>R @prod.Price</p>
+
+                    <div class="card-foot">
+                        <button type="button" class="mvbuttongreen-sm" id="@prod.PROD_ID" onclick="addtoCart(this.id)">Add <i class="fa fa-shopping-cart"></i></button>
+                        <button type="button" class="mvbuttongreen-sm" id="@prod.PROD_ID" onclick="addtoWishList(this.id)"><i class="fa fa-heart"></i></button>
+                        <button type="button" onclick="@("window.location.href='" + @Url.Action("ProductDetails", "Store", new { prodId = prod.PROD_ID}) + "'")" class="mvbuttongreen-sm">More</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+        <div class="toast-header">
+            <strong class="mr-auto">Message</strong>
+            <small>Now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            <p id="mytoastMessage"></p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var msg = document.getElementById("responseMessage");
+    var alertDiv = document.getElementById("btAlert");
+    alertDiv.style.display = "none";
+
+    function showLoader() {
+        var myDiv = document.getElementById('loader-bg');
+        myDiv.style.opacity = 1;
+        myDiv.style.zIndex = 9999;
+    }
+
+    function addtoCart(prodId) {
+        var custEmail = localStorage.getItem("userEmail");
+        showLoader();
+
+        if (custEmail == null) {
+            alertDiv.style.display = "block";
+            msg.innerHTML = `<strong>You are not logged in,</strong> please log in or register to start shopping :). redirecting...`;
+
+            setTimeout(function () {
+                window.location.href = "/userAccount/Login";
+            }, 2000);
+
+        }
+        else {
+            $.post({
+                url: "@Url.Action("AddTOCart", "Store")",
+                data: {
+                    email: custEmail,
+                    productID: prodId,
+                },
+                 success: (data) => {
+                    let msg = JSON.parse(data);
+                     $('#liveToast').toast('show')
+                    $("#mytoastMessage").text(msg.message);
+                    window.location.href = "/Store/Store";
+                },
+                error: (data) => {
+                    let msg = JSON.parse(data);
+                    $("#mytoastMessage").text(msg.message);
+                }
+            });
+        }
+    }
+
+
+    function addtoWishList(prodId){
+        var custEmail = localStorage.getItem("userEmail");
+
+        if (custEmail == null) {
+            showLoader();
+            alertDiv.style.display = "block";
+            msg.innerHTML = `<strong>You are not logged in,</strong> please log in or register to add to wishlist. redirecting...`;
+
+            setTimeout(function () {
+                window.location.href = "/userAccount/Login";
+            }, 2000);
+
+        }
+        else {
+            $.post({
+                url: "@Url.Action("AddToWishList", "Store")",
+                data: {
+                    email: custEmail,
+                    productID: prodId,
+                },
+                 success: (data) => {
+                    let msg = JSON.parse(data);
+                     $('#liveToast').toast('show')
+                     $("#mytoastMessage").text(msg.message);
+                     setTimeout(function () {
+                         window.location.reload();
+                     }, 1000);
+                },
+                error: (data) => {
+                    let msg = JSON.parse(data);
+                    $("#mytoastMessage").text(msg.message);
+                }
+            });
+        }
+    }
+</script>

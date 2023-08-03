@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="db_a98f3b_mvuyelwafitnessdbModelStoreContainer" CdmEntityContainer="db_a98f3b_mvuyelwafitnessdbEntities">
+    <EntitySetMapping Name="Payments">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Payment">
+        <MappingFragment StoreEntitySet="Payments">
+          <ScalarProperty Name="PAYMENT_ID" ColumnName="PAYMENT_ID" />
+          <ScalarProperty Name="CUSTOMER_ID" ColumnName="CUSTOMER_ID" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Order_Item">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Order_Item">
+        <MappingFragment StoreEntitySet="Order_Item">
+          <ScalarProperty Name="ITEM_ID" ColumnName="ITEM_ID" />
+          <ScalarProperty Name="ORDER_NUM" ColumnName="ORDER_NUM" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="PROD_ID" ColumnName="PROD_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Orders">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Order">
+        <MappingFragment StoreEntitySet="Orders">
+          <ScalarProperty Name="DEL_STATUS_ID" ColumnName="DEL_STATUS_ID" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+          <ScalarProperty Name="ORDER_NUM" ColumnName="ORDER_NUM" />
+          <ScalarProperty Name="CUSTOMER_ID" ColumnName="CUSTOMER_ID" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Products">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Product">
+        <MappingFragment StoreEntitySet="Products">
+          <ScalarProperty Name="PROD_ID" ColumnName="PROD_ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Category" ColumnName="Category" />
+          <ScalarProperty Name="Nutritional_info" ColumnName="Nutritional_info" />
+          <ScalarProperty Name="image" ColumnName="image" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Addresses">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Address">
+        <MappingFragment StoreEntitySet="Addresses">
+          <ScalarProperty Name="ADDRESS_ID" ColumnName="ADDRESS_ID" />
+          <ScalarProperty Name="CUSTOMER_ID" ColumnName="CUSTOMER_ID" />
+          <ScalarProperty Name="Street_add" ColumnName="Street_add" />
+          <ScalarProperty Name="Town_City" ColumnName="Town_City" />
+          <ScalarProperty Name="Province" ColumnName="Province" />
+          <ScalarProperty Name="Zip" ColumnName="Zip" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Administrators">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Administrator">
+        <MappingFragment StoreEntitySet="Administrators">
+          <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Surname" ColumnName="Surname" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Reset_key" ColumnName="Reset_key" />
+          <ScalarProperty Name="Date_Added" ColumnName="Date_Added" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Cart_Item">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Cart_Item">
+        <MappingFragment StoreEntitySet="Cart_Item">
+          <ScalarProperty Name="CART_ITEM_ID" ColumnName="CART_ITEM_ID" />
+          <ScalarProperty Name="CUSTOMER_ID" ColumnName="CUSTOMER_ID" />
+          <ScalarProperty Name="PROD_ID" ColumnName="PROD_ID" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ContactForms">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.ContactForm">
+        <MappingFragment StoreEntitySet="ContactForm">
+          <ScalarProperty Name="CONTACT_ID" ColumnName="CONTACT_ID" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Subject" ColumnName="Subject" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Customers">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Customer">
+        <MappingFragment StoreEntitySet="Customer">
+          <ScalarProperty Name="CUSTOMER_ID" ColumnName="CUSTOMER_ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Surname" ColumnName="Surname" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Reset_key" ColumnName="Reset_key" />
+          <ScalarProperty Name="Date_Created" ColumnName="Date_Created" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Cust_Wishlist">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Cust_Wishlist">
+        <MappingFragment StoreEntitySet="Cust_Wishlist">
+          <ScalarProperty Name="PROD_ID" ColumnName="PROD_ID" />
+          <ScalarProperty Name="CUSTOMER_ID" ColumnName="CUSTOMER_ID" />
+          <ScalarProperty Name="LIST_ID" ColumnName="LIST_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Payment_Statuses">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Payment_Statuses">
+        <MappingFragment StoreEntitySet="Payment_Statuses">
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Delivery_Status">
+      <EntityTypeMapping TypeName="db_a98f3b_mvuyelwafitnessdbModel.Delivery_Status">
+        <MappingFragment StoreEntitySet="Delivery_Status">
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="DEL_STATUS_ID" ColumnName="DEL_STATUS_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

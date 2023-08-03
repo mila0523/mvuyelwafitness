@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewBag.Title = "Canceled";
+}
+
+<div class="container">
+    <div class="col-sm-12">
+        <div class="text-center">
+            <br />
+
+            <div class="card center" style="width: 95%; margin: auto;">
+                <div class="card-body" style="margin: auto;">
+                    <h3>TRANSACTION CANCELED</h3>
+                    <p style="color: red; font-size: 60px;">
+                        <i class="fa fa-times-circle"></i><br />
+                        <img src="https://www.nicepng.com/png/detail/235-2355689_american-express-mastercard-and-visa-logos-visa.png" alt="visaMastercasr" width="70%" />               
+                    </p>
+                    <br />
+                </div>
+            </div>
+
+            <br />
+            <h6>Redirecting to home page in... <span id="countdown">10</span></h6>
+            <div class="spinner-border text-danger" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var count = document.getElementById("countdown");
+    var topnav = document.getElementById("topnav-mvfitness");
+    topnav.style.visibility = "hidden";
+
+    let counter = parseFloat(count.innerHTML); 
+    function countDown() {
+        counter--; // Increment the counter
+        count.innerHTML = counter;
+        if (counter === 10) {
+            clearInterval(intervalId); // Clear the interval after 10 times
+        }
+    }
+    // Call myFunction every second
+    const intervalId = setInterval(countDown, 1000);
+
+    setTimeout(function () {
+        window.location.href = "/Home/Index";
+    }, 10000);
+</script>

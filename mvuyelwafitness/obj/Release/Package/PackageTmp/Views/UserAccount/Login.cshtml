@@ -1,0 +1,280 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<br />
+<center>
+    <h5 id="loginMessage"></h5>
+</center>
+<hr />
+<script type="text/javascript">
+    var message = document.getElementById("loginMessage");
+    var loggedEmail = localStorage.getItem("userEmail");
+
+    if (loggedEmail) {
+        window.location.href = "/UserAccount/ViewAccount" + "?email=" + loggedEmail;
+    }
+    else {
+        message.innerHTML = "You are not logged in, please log in."
+    }
+</script>
+
+<div class="alert alert-primary alert-dismissible fade show" id="btAlert" role="alert">
+    <div id="responseMessage">
+    </div>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div style="width: 100%; margin: auto; padding-left: 20px; padding-right: 20px;">
+    <div class="card my-card">
+        <div class="card-body">
+            <form>
+                <p id="errMessage" style="color: red;"></p>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Username / Email</label>
+                    <input type="email" class="form-control" id="EmailUsername" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="LoPassword">Password</label>
+                    <input type="password" class="form-control" id="LoPassword" placeholder="Password">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick="viewopenPass()" class="form-check-input" id="passInputcheck">
+                    <label class="form-check-label" for="passInput">View password</label>
+                </div>
+
+                <div class="form-group">
+                    <a href="#" onclick="checkEmail()" data-toggle="modal" data-target="#modalResetpass">Reset Password</a>
+                </div>
+                <center><button type="button" onclick="login()" class="mvbuttongreen form-control">Log in</button></center>
+                Don't have an account? <a href="/UserAccount/AddAccount">Register here</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal reset pass-->
+<div class="modal fade" id="modalResetpass" tabindex="-1" style="z-index: 9999;" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="resetLongTitle">Reset Password</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="resetfrm">
+                    <p id="myerrMess" style="color:red; font-size: 14px;"></p>
+                    <div class="form-group">
+                        <label for="emailreset">Email Address:</label>
+                        <input type="email" onkeyup="checkEmail()" class="form-control" id="emailreset" placeholder="Enter email">
+                        <p id="message" style="color:goldenrod">
+
+                        </p> <img src="~/assets/threedotloader.gif" id="loader" alt="sending..." width="10%" />
+
+                        <button type="button" id="sendResKey" class="btn-sm btn-outline-secondary" onclick="sendResKEy()">Send reset key</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="resPassword">New Password:</label>
+                        <input type="password" onkeyup="checkpassLegth()" class="form-control" id="resPassword" placeholder="New Password..">
+                        <p id="pLengthError"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="resPasswordconfirm">Confirm Password:</label>
+                        <input type="password" onkeyup="checkmatch()" class="form-control" id="resPasswordconfirm" placeholder="Confirm Password..">
+                        <p id="pError"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="resKey">Reset Key:</label>
+                        <input type="number" class="form-control" id="resetKey" placeholder="Reset key..">
+                    </div>
+                    <center><button type="button" onclick="resetpass()" id="resbtn" class="mvbuttongreen">Reset Password</button></center>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var loggedEmail = localStorage.getItem("userEmail");
+    var message = document.getElementById("loginMessage");
+    var loader = document.getElementById("loader");
+    var alertDiv = document.getElementById("btAlert");
+
+    loader.style.display = "none";
+    alertDiv.style.display = "none";
+
+    //handles login function and data to controller
+    function login() {
+        var emlogin = $('#EmailUsername').val();
+        $("#errMessage").text("");
+        localStorage.clear();
+
+        $.post({
+        url: "@Url.Action("UserLogin", "UserAccount")",
+        data: {
+            email: $('#EmailUsername').val(),
+            password: $('#LoPassword').val(),
+        },
+        success: (data) => {
+            let msg = JSON.parse(data);
+            var email = msg.email;
+
+            if (email) {
+                window.location.href = "/UserAccount/ViewAccount" + "?email=" + email;
+                localStorage.setItem("userEmail", email);
+            }
+            else {
+                $("#errMessage").text(msg.message);
+            }
+        },
+        error: (data) => {
+            let msg = JSON.parse(data);
+            $("#errMessage").text(msg.message);
+        }
+        });
+    }
+
+    //enables user to click on checkbox and view or hide their password.
+    function viewopenPass(){
+        $('#passInputcheck').change(function () {
+            var isChecked = $(this).is(':checked');
+            var passwordInput = $('#LoPassword');
+
+            if (isChecked) {
+                passwordInput.attr('type', 'text');
+            } else {
+                passwordInput.attr('type', 'password');
+            }
+        });
+    }
+
+    function disablefrmoptions() {
+        document.getElementById("resPassword").disabled = true;
+        document.getElementById("resPasswordconfirm").disabled = true;
+        document.getElementById("resetKey").disabled = true;
+        document.getElementById("resbtn").disabled = true;
+        document.getElementById("sendResKey").disabled = true;
+        checkEmail();
+    }
+
+    //check email field
+    function checkEmail() {
+        var email = $("#emailreset").val();
+        var btn = document.getElementById("sendResKey");
+        var msg = document.getElementById("message");
+
+        if (email.includes("@@")) {
+            msg.innerHTML = " ";
+            btn.disabled = false;
+        }
+        else
+        {
+            msg.innerHTML = "Please ensure the email is correct, should include '@@'"
+            btn.disabled = true;
+        }
+    }
+
+    function sendResKEy() {
+        var mssge = document.getElementById("message");
+        loader.style.display = "block";
+
+        $.post({
+            url: "@Url.Action("ResetKey", "UserAccount")",
+            data: {
+                email: $("#emailreset").val(),
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+                //remove loader
+                loader.style.display = "none";
+                mssge.innerHTML = msg.message;
+
+                //enable inputs
+                document.getElementById("resPassword").disabled = false;
+                document.getElementById("resPasswordconfirm").disabled = false;
+                document.getElementById("resetKey").disabled = false;
+                document.getElementById("resbtn").disabled = false;
+
+            },
+            error: (data) => {
+                let msg = JSON.parse(data);
+                loader.style.display = "none";
+                mssge.innerHTML = msg.message;
+            }
+            });
+    }
+
+    //reset password
+    function resetpass() {
+        var respmsg = document.getElementById("responseMessage");
+
+            $.post({
+            url: "@Url.Action("ResetcustPass", "UserAccount")",
+            data: {
+                email: $("#emailreset").val(),
+                resetkey: $("#resetKey").val(),
+                password: $("#resPassword").val(),
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+                $("#myerrMess").text(msg.message);
+
+                $("#resetfrm")[0].reset();
+                $("#modalResetpass").modal("hide");
+
+                alertDiv.style.display = "block";
+                respmsg.innerHTML = `<strong>Successfull!</strong> Your password has been reset, please login in.`;
+            },
+            error: () => {
+                $("#myerrMess").text("Email does not exist.");
+            }
+            });
+    }
+
+    //checks if the password and confirm pass match on registration
+    function checkmatch() {
+        var npass = $("#resPassword").val()
+        var matchpass = $("#resPasswordconfirm").val()
+        var errorMessage = document.getElementById("pError");
+        var submitbtn = document.getElementById("resbtn");
+
+        if (npass != matchpass) {
+            errorMessage.innerHTML = `<span style="color: red; font-size: 12px;">Passwords don't match</span>`
+            submitbtn.disabled = true;
+        }
+        else {
+            errorMessage.innerHTML = `<span style="color: green; font-size: 12px;">Passwords match</span>`;
+            submitbtn.disabled = false;
+        }
+    }
+
+    //check password legnth on registration
+    function checkpassLegth() {
+        checkmatch()
+        var plegth = document.getElementById("pLengthError");
+        var npass = $("#resPassword").val()
+        var submitbtn = document.getElementById("resbtn");
+
+        if (npass.length > 12) {
+            plegth.innerHTML = `<i style="color: red; font-size: 11px;">Password must be 8 characters or more! (max 12)</i>`
+            submitbtn.disabled = true;
+        }
+        else {
+            plegth.innerHTML = `<i style="color: green; font-size: 12px;">Good Password strength!</i>`
+            submitbtn.disabled = false;
+            checkmatch();
+        }
+
+        if (npass.length < 8) {
+            plegth.innerHTML = `<i style="color: red; font-size: 12px;">Password must be 8 characters or more!</i>`
+            submitbtn.disabled = true;
+        }
+        else {
+            plegth.innerHTML = `<i style="color: green; font-size: 12px;">Good Password strength!</i>`
+            submitbtn.disabled = false;
+            checkmatch();
+        }
+    }
+</script>

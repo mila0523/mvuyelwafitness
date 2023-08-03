@@ -1,0 +1,457 @@
+﻿@model mvuyelwafitness.Models.OrderVM
+@{
+    ViewBag.Title = "Account";
+
+    var cust = Model.myCustomer[0];
+
+    var address = Model.MyAddresses.Where(a => a.CUSTOMER_ID == cust.CUSTOMER_ID).FirstOrDefault();
+}
+
+
+<br />
+<h4>Account Center</h4>
+<hr />
+
+<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-success" onclick="showPersonalPage()">Personal Details</button>
+    <button type="button" class="btn btn-success" onclick="showAddress()">Manage Addresses</button>
+    <button type="button" class="btn btn-success" onclick="ShowOrders()">Orders</button>
+    <button type="button" class="btn btn-success" onclick="@("window.location.href='" + @Url.Action("Wishlist", "Store", new { custId = cust.CUSTOMER_ID}) + "'")">Wishlist</button>
+    <a type="button" class="btn btn-success" href="/Home/Index" onclick="localStorage.clear()">Log Out</a>
+</div>
+<br />
+<br />
+<div class="alert alert-primary alert-dismissible fade show" id="btAlert" role="alert">
+    <div id="responseMessage">
+    </div>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+
+<div id="personal" class="card" style="transition: ease-in 0.5s;">
+    <div class="card-header">
+        <h5 style="width: 100%;">@cust.Name @cust.Surname <i class="fa fa-user float-right"></i></h5>
+    </div>
+    <div class="card-body">
+        <p>
+            <b>Phone:</b> @cust.Phone <br />
+            <b>Email:</b> @cust.Email <br />
+            <b>Primary Address:</b> @address.Street_add, @address.Town_City, @address.Province, @address.Zip
+        </p>
+    </div>
+    <div class="card-footer">
+        <p>Account registered on: @cust.Date_Created</p>
+        <button type="button" data-target="#customerDetails" data-toggle="modal" class="btn btn-sm btn-secondary">Edit details</button>
+    </div>
+</div>
+
+<div id="orders" class="card" style="display: none; transition: ease-in 0.5s;">
+    <div class="card-header">
+        <h5 style="width: 100%;">All your orders <i class="fa fa-shopping-basket float-right"></i></h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm table-striped">
+            <thead class="bg-success text-light">
+                <tr>
+                    <th>Order #</th>
+                    <th>Date</th>
+                    <th>Order Total</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.myOrders == null)
+                {
+                    <tr>
+                        <h5>You have not made any order</h5>
+                    </tr>
+                    <a href="/Store/Store">Start Shopping</a>
+                }
+                else
+                {
+                    foreach (var order in Model.myOrders)
+                    {
+                        <tr>
+                            <td>@order.ORDER_NUM</td>
+                            <td>@order.Date</td>
+                            <td>@order.Total</td>
+                            <td><button type="button" class="mvbuttongreen-sm"><i class="fa fa-eye"></i></button></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="addresses" class="card" style="display: none; transition: ease-in 0.5s;">
+    <div class="card-header">
+        <h5 style="width: 100%;">Address Book<i class="fa fa-book float-right"></i></h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm table-striped">
+            <thead class="bg-success text-light">
+                <tr>
+                    <th>Address</th>
+                    <th>Town</th>
+                    <th>Province</th>
+                    <th>Zip</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var addr in Model.MyAddresses)
+                {
+                    <tr style="font-size: 12px;">
+                        <td>@addr.Street_add</td>
+                        <td>@addr.Town_City</td>
+                        <td>@addr.Province</td>
+                        <td>@addr.Zip</td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" id="@addr.ADDRESS_ID" data-target="#md-@addr.ADDRESS_ID" data-toggle="modal" class="mvbuttongreen-sm"><i class="fa fa-pencil"></i></button>
+                                <button type="button" id="@addr.ADDRESS_ID" onclick="delAddress(this.id)" class="mvbuttongreen-sm"><i class="fa fa-trash-can"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="md-@addr.ADDRESS_ID" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="addModalTitle">Edit Address</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form id="editFrm">
+                                    <div class="modal-body">
+                                        <h4>Address:</h4>
+                                        <div class="form-group">
+                                            <label for="straddress">Street Address:<span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control frm-field" name="straddress" id="straddress" placeholder="Street address..." value="@addr.Street_add" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="town">Town / City:<span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control frm-field" name="town" id="town" placeholder="Town / City..." value="@addr.Town_City" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="province">Province:<span style="color: red;">*</span></label>
+                                            <select type="text" class="form-control" name="province" id="province" required>
+                                                <option value="Select Province">Select Province</option>
+                                                <option value="Eastern Cape">Eastern Cape</option>
+                                                <option value="Free State">Free State</option>
+                                                <option value="Gauteng">Gauteng</option>
+                                                <option value="Kwazulu-Natal">Kwazulu-Natal</option>
+                                                <option value="Limpopo">Limpopo</option>
+                                                <option value="Mpumalanga">Mpumalanga</option>
+                                                <option value="Northern Cape">Northern Cape</option>
+                                                <option value="North West">North West</option>
+                                                <option value="Western Cape">Western Cape</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="zip">Zip-Code:<span style="color: red;">*</span></label>
+                                            <input type="number" min="0" max="99999" class="form-control frm-field" name="zip" id="zip" placeholder="Zip-Code..." value="@addr.Zip" required />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" onclick="editAddress(@addr.ADDRESS_ID)" class="btn mvbuttongreen-sm">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <button type="button" data-target="#newAddress" data-toggle="modal" class="btn btn-sm btn-secondary">Add address</button>
+    </div>
+</div>
+
+<!-- Edit customer modal -->
+<div class="modal fade" id="customerDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="editModalTitle">Edit Account</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editFrm">
+                <div class="modal-body">
+                    <h4>Personal Details: </h4>
+                    <div class="form-group">
+                        <label for="name">Name:<span style="color: red;">*</span></label>
+                        <input type="text" class="form-control frm-field" name="name" id="name" placeholder="Name..." value="@cust.Name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="surname">Surname:<span style="color: red;">*</span></label>
+                        <input type="text" class="form-control frm-field" name="surname" id="surname" placeholder="Surname..." value="@cust.Surname" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:<span style="color: red;">*</span></label>
+                        <input type="email" class="form-control frm-field" name="email" id="email" placeholder="example@mail.com..." value="@cust.Email" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone:<span style="color: red;">*</span></label>
+                        <input type="number" min="0" max="0999999999" class="form-control frm-field" name="phone" id="phone" placeholder="0123456789..." value="@cust.Phone" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="editUser()" class="btn mvbuttongreen-sm">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- new address modal -->
+<div class="modal fade" id="newAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="addModalTitle">Add Address</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editFrm">
+                <div class="modal-body">
+                    <h4>Address:</h4>
+                    <div class="form-group">
+                        <label for="newstraddress">Street Address:<span style="color: red;">*</span></label>
+                        <input type="text" class="form-control frm-field" name="newstraddress" id="newstraddress" placeholder="Street address..." required />
+                    </div>
+                    <div class="form-group">
+                        <label for="newtown">Town / City:<span style="color: red;">*</span></label>
+                        <input type="text" class="form-control frm-field" name="newtown" id="newtown" placeholder="Town / City..." required />
+                    </div>
+                    <div class="form-group">
+                        <label for="newprovince">Province:<span style="color: red;">*</span></label>
+                        <select type="text" class="form-control" name="newprovince" id="newprovince" required>
+                            <option value="Select Province">Select Province</option>
+                            <option value="Eastern Cape">Eastern Cape</option>
+                            <option value="Free State">Free State</option>
+                            <option value="Gauteng">Gauteng</option>
+                            <option value="Kwazulu-Natal">Kwazulu-Natal</option>
+                            <option value="Limpopo">Limpopo</option>
+                            <option value="Mpumalanga">Mpumalanga</option>
+                            <option value="Northern Cape">Northern Cape</option>
+                            <option value="North West">North West</option>
+                            <option value="Western Cape">Western Cape</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newzip">Zip-Code:<span style="color: red;">*</span></label>
+                        <input type="number" min="0" max="99999" class="form-control frm-field" name="newzip" id="newzip" placeholder="Zip-Code..." required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="addNewAddress()" class="btn mvbuttongreen-sm">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var resMsg = document.getElementById("responseMessage");
+    var notification = document.getElementById("btAlert");
+
+    notification.style.display = "none";
+
+    function showLoader() {
+        var myDiv = document.getElementById('loader-bg');
+        myDiv.style.opacity = 1;
+        myDiv.style.zIndex = 9999;
+    }
+    function editAddress(addressID) {
+
+        if(addressID){
+            $.post({
+                url: "@Url.Action("EditAddress", "UserAccount")",
+                data: {
+                    addId: addressID,
+                    strAddress: $("#straddress").val(),
+                    town: $("#town").val(),
+                    province: $("#province").val(),
+                    zip: $("#zip").val()
+                },
+                success: (data) => {
+                    let msg = JSON.parse(data);
+                    alert(msg.message);
+                    window.location.reload();
+                },
+                error: () => {
+                    alert("Please make sure all fields and values are filled in correctly");
+                }
+            });
+        }
+        else
+        {
+            alert("Failed, unable to update address, please contact support.")
+        }
+    }
+
+    function delAddress(addressID) {
+        if (addressID) {
+            showLoader();
+            $.post({
+                url: "@Url.Action("RemoveAddress", "UserAccount")",
+                data: {
+                    addressId: addressID,
+                },
+                success: (data) => {
+                    let msg = JSON.parse(data);
+
+                    if (msg.message == "success") {
+                        window.location.reload();
+                    }
+                    else {
+                        alert(msg.message);
+                    }
+                },
+                error: (data) => {
+                    alert(msg.message);
+                }
+            });
+        }
+        else {
+            alert("Failed! please contact support.")
+        }
+    }
+
+    function addNewAddress() {
+        showLoader();
+        $.post({
+            url: "@Url.Action("AddAddress", "UserAccount")",
+            data: {
+                email: "@cust.Email",
+                strAddress: $("#newstraddress").val(),
+                town: $("#newtown").val(),
+                province: $("#newprovince").val(),
+                zip: $("#newzip").val()
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+                alert(msg.message);
+                window.location.reload();
+            },
+            error: () => {
+                alert("Please make sure all fields and values are filled in correctly");
+            }
+        });
+    }
+
+    function editUser() {
+        var loggedinEmail = localStorage.getItem("userEmail");
+        var loaders = document.getElementById("loader-bg");
+        loaders.style.opacity = 1;
+        loaders.style.zIndex = 9999;
+
+        if ($("#name").val() == "") {
+            errMsg.innerHTML = "Please fill in required fields!";
+            hilightfields();
+        }
+        else if ($("#surname").val() == ""){
+            errMsg.innerHTML = "Please fill in required fields!";
+            hilightfields();
+        }
+        else if ($("email").val() == "" || $("#phone").val() == ""){
+            errMsg.innerHTML = "Please fill in required fields!";
+            hilightfields();
+        }
+        else if ($("#straddress").val() == "" || $("#town").val() == "") {
+            errMsg.innerHTML = "Please fill in required fields!";
+            hilightfields();
+        }
+        else
+        {
+            //send data to controller
+            $.post({
+                url: "@Url.Action("EditAccount", "UserAccount")",
+                data: {
+                    loginEmail: loggedinEmail,
+                    name: $("#name").val(),
+                    surname: $("#surname").val(),
+                    email: $("#email").val(),
+                    phone: $("#phone").val(),
+                },
+                success: (data) => {
+                    $("#customerDetails").modal('hide')
+                    let msg = JSON.parse(data);
+
+                    if (loggedinEmail.toLowerCase() == $("#email").val()) {
+                        notification.style.display = "block";
+                        resMsg.innerHTML = msg.message;
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                    else {
+                        alert(msg.message + "\nYou Will be logged out because your email has changed");
+                        localStorage.clear();
+                        window.location.href = "/UserAccount/Login";
+                    }                   
+                },
+                error: () => {
+                    alert("Please make sure all fields and values are filled in correctly");
+                }
+            });
+        }
+    }
+
+    function hilightfields() {
+        var regInputs = document.getElementsByClassName("frm-field");
+
+        for (var i = 0; i < regInputs.length; i++) {
+            if (regInputs[i].value.trim() == "") {
+                regInputs[i].style.border = "2px solid red"
+            }
+            else {
+                regInputs[i].style.border = "none"
+            }
+        }
+    }
+
+    var personalBlock = document.getElementById("personal");
+    var OrdersBlock = document.getElementById("orders");
+    var add = document.getElementById("addresses");
+
+    function showPersonalPage() {
+        personalBlock.style.transition = "ease-in 0.5s";
+        personalBlock.style.display = "block";
+        OrdersBlock.style.transition = "ease-in 0.5s";
+        OrdersBlock.style.display = "none";
+        add.style.transition = "ease-in 0.5s";
+        add.style.display = "none";
+    }
+
+    function ShowOrders() {
+        personalBlock.style.transition = "ease-in 0.5s";
+        personalBlock.style.display = "none";
+        OrdersBlock.style.transition = "ease-in 0.5s";
+        OrdersBlock.style.display = "block";
+        add.style.transition = "ease-in 0.5s";
+        add.style.display = "none";
+
+    }
+
+    function showAddress() {
+        personalBlock.style.transition = "ease-in 0.5s";
+        personalBlock.style.display = "none";
+        OrdersBlock.style.transition = "ease-in 0.5s";
+        OrdersBlock.style.display = "none";
+        add.style.transition = "ease-in 0.5s";
+        add.style.display = "block";
+    }
+
+</script>

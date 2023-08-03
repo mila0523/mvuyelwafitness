@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "Contact";
+}
+
+
+
+
+<!--Contact us section-->
+<hr />
+<section id="contact-sect">
+    <div class="alert alert-primary alert-dismissible fade show" id="btAlert" role="alert">
+        <div id="responseMessage">
+        </div>
+        <div class="spinner-border" id="load-circle" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    
+
+    <div class="row">
+        <div class="col-sm-6">
+            <br />
+            <h2 class="logoHead">MVUYELWA<span style="color: #6ab32e;">FITNESS</span></h2>
+            <h1>Contact Us</h1>
+            <h5><i class="fa fa-map-marker"></i>&nbsp; Waterkloof, Pretoria, Gauteng, 0810</h5>
+            <h5 href="mailto:info@mvuyelwafitness.co.za"><i class="fa fa-envelope"></i>&nbsp; support@mvuyelwafitness.co.za</h5>
+            <h5><i class="fa fa-phone"></i>&nbsp; +27 60 928 4392</h5>
+            <img src="~/assets/Mooi Kloof map.png" alt="Map" width="85%" />
+        </div>
+        <div class="col-sm-6">
+            <h4>Leave us a message.</h4>
+            <form id="contact-frm">
+                <div class="form-group">
+                    <label for="">Full Name:<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control frm-field" name="name" id="name" placeholder="Mvuyelwa Fitness..." required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control frm-field" name="email" id="email" placeholder="support@mvuyelwafitness.co.za..." required />
+                </div>
+                <div>
+                    <select type="text" class="form-control" name="subject" id="subject" placeholder="general..." required>
+                        <option value="General Query">General</option>
+                        <option value="Sales Products">Sales</option>
+                        <option value="Account">Account Query</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:<span style="color: red;">*</span></label>
+                    <textarea type="text" rows="5" class="form-control frm-field" name="message" id="message" placeholder="Say something..." required></textarea>
+                </div>
+
+                <button type="button" class="btn btn-success" onclick="contactUs()">Send &nbsp;<i class="fa fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    var msgBody = document.getElementById("responseMessage");
+    var notifiction = document.getElementById("btAlert");
+    var load = document.getElementById("load-circle");
+    notifiction.style.display = "none";
+    load.style.display = "none"
+
+    function showLoader() {
+        var myDiv = document.getElementById('loader-bg');
+        myDiv.style.opacity = 1;
+        myDiv.style.zIndex = 9999;
+    }
+    function contactUs() {
+        notifiction.style.display = "block";
+        msgBody.innerHTML = "Sending your message, please wait...";
+        load.style.display = "block";
+
+        if ($("#name").val() == "") {
+            alert("erro fields missing!")
+        }
+        else if ($("#email").val() == "") {
+            alert("erro fields missing!")
+        }
+        else if ($("#message").val() == "") {
+            alert("erro fields missing!")
+        }
+        else{
+            $.post({
+                url: "@Url.Action("ContactUs", "Home")",
+                data: {
+                    email: $("#email").val(),
+                    name: $("#name").val(),
+                    subject: $("#subject").val(),
+                    message: $("#message").val()
+                },
+                success: (data) => {
+                    let msg = JSON.parse(data);
+
+                    if (msg.message == "Message sent") {
+                        notifiction.style.display = "block";
+                        msgBody.innerHTML = msg.message;
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);                     
+                    }
+                    else {
+                        notifiction.style.display = "block";
+                        msgBody.innerHTML = msg.message;
+
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: (data) => {
+                    let msg = JSON.parse(data);
+                    notifiction.style.display = "block";
+                    msgBody.innerHTML = msg.message;
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    //When registering any empty fields on submit will be hilighted
+    function hilightfields() {
+        var regInputs = document.getElementsByClassName("frm-field");
+
+        for (var i = 0; i < regInputs.length; i++) {
+            if (regInputs[i].value.trim() == "") {
+                regInputs[i].style.border = "2px solid red"
+            }
+            else {
+                regInputs[i].style.border = "none"
+            }
+        }
+    }
+</script>

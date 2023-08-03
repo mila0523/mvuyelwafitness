@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="db_a98f3b_mvuyelwafitnessdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Payments">
+    <Key>
+      <PropertyRef Name="PAYMENT_ID" />
+    </Key>
+    <Property Name="PAYMENT_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CUSTOMER_ID" Type="int" Nullable="false" />
+    <Property Name="Date" Type="datetime" />
+    <Property Name="Description" Type="varchar" MaxLength="100" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="0" />
+  </EntityType>
+  <EntityType Name="Delivery_Status">
+    <Key>
+      <PropertyRef Name="DEL_STATUS_ID" />
+    </Key>
+    <Property Name="DEL_STATUS_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Order_Item">
+    <Key>
+      <PropertyRef Name="ITEM_ID" />
+    </Key>
+    <Property Name="ITEM_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ORDER_NUM" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="int" />
+    <Property Name="PROD_ID" Type="varchar" MaxLength="12" />
+  </EntityType>
+  <EntityType Name="Orders">
+    <Key>
+      <PropertyRef Name="ORDER_NUM" />
+    </Key>
+    <Property Name="ORDER_NUM" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CUSTOMER_ID" Type="int" Nullable="false" />
+    <Property Name="Date" Type="datetime" />
+    <Property Name="Total" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="STATUS_ID" Type="int" Nullable="false" />
+    <Property Name="DEL_STATUS_ID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Payment_Statuses">
+    <Key>
+      <PropertyRef Name="STATUS_ID" />
+    </Key>
+    <Property Name="STATUS_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Products">
+    <Key>
+      <PropertyRef Name="PROD_ID" />
+    </Key>
+    <Property Name="PROD_ID" Type="varchar" MaxLength="12" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="500" />
+    <Property Name="Price" Type="decimal" Precision="10" Scale="2" />
+    <Property Name="Description" Type="varchar(max)" />
+    <Property Name="Category" Type="varchar" MaxLength="100" />
+    <Property Name="Nutritional_info" Type="varchar(max)" />
+    <Property Name="image" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Addresses">
+    <Key>
+      <PropertyRef Name="ADDRESS_ID" />
+    </Key>
+    <Property Name="ADDRESS_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CUSTOMER_ID" Type="int" Nullable="false" />
+    <Property Name="Street_add" Type="varchar" MaxLength="1000" />
+    <Property Name="Town_City" Type="varchar" MaxLength="500" />
+    <Property Name="Province" Type="varchar" MaxLength="200" />
+    <Property Name="Zip" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="Administrators">
+    <Key>
+      <PropertyRef Name="USER_ID" />
+    </Key>
+    <Property Name="USER_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" />
+    <Property Name="Surname" Type="varchar" MaxLength="50" />
+    <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Address" Type="varchar" MaxLength="200" />
+    <Property Name="Reset_key" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Date_Added" Type="datetime" />
+    <Property Name="Phone" Type="varchar" MaxLength="13" />
+  </EntityType>
+  <EntityType Name="Cart_Item">
+    <Key>
+      <PropertyRef Name="CART_ITEM_ID" />
+    </Key>
+    <Property Name="CART_ITEM_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CUSTOMER_ID" Type="int" Nullable="false" />
+    <Property Name="PROD_ID" Type="varchar" MaxLength="12" />
+    <Property Name="Quantity" Type="int" />
+  </EntityType>
+  <EntityType Name="ContactForm">
+    <Key>
+      <PropertyRef Name="CONTACT_ID" />
+    </Key>
+    <Property Name="CONTACT_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="100" />
+    <Property Name="Name" Type="varchar" MaxLength="100" />
+    <Property Name="Message" Type="varchar(max)" />
+    <Property Name="Date" Type="datetime" />
+    <Property Name="Subject" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Cust_Wishlist">
+    <Key>
+      <PropertyRef Name="LIST_ID" />
+    </Key>
+    <Property Name="LIST_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CUSTOMER_ID" Type="int" Nullable="false" />
+    <Property Name="PROD_ID" Type="varchar" MaxLength="12" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CUSTOMER_ID" />
+    </Key>
+    <Property Name="CUSTOMER_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" />
+    <Property Name="Surname" Type="varchar" MaxLength="50" />
+    <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Password" Type="varchar(max)" />
+    <Property Name="Reset_key" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Date_Created" Type="datetime" />
+    <Property Name="Phone" Type="varchar" MaxLength="13" />
+  </EntityType>
+  <Association Name="FK__Addresses__CUSTO__403A8C7D">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cart_Item__CUSTO__3A81B327">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Cart_Item" Type="Self.Cart_Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Cart_Item">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cart_Item__PROD___3B75D760">
+    <End Role="Products" Type="Self.Products" Multiplicity="0..1" />
+    <End Role="Cart_Item" Type="Self.Cart_Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="PROD_ID" />
+      </Principal>
+      <Dependent Role="Cart_Item">
+        <PropertyRef Name="PROD_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cust_Wish__CUSTO__4AB81AF0">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Cust_Wishlist" Type="Self.Cust_Wishlist" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Cust_Wishlist">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cust_Wish__PROD___4BAC3F29">
+    <End Role="Products" Type="Self.Products" Multiplicity="1" />
+    <End Role="Cust_Wishlist" Type="Self.Cust_Wishlist" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="PROD_ID" />
+      </Principal>
+      <Dependent Role="Cust_Wishlist">
+        <PropertyRef Name="PROD_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Order_Ite__PROD___37A5467C">
+    <End Role="Products" Type="Self.Products" Multiplicity="0..1" />
+    <End Role="Order_Item" Type="Self.Order_Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="PROD_ID" />
+      </Principal>
+      <Dependent Role="Order_Item">
+        <PropertyRef Name="PROD_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Orders__CUSTOMER__2A4B4B5E">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Orders__DEL_STAT__5535A963">
+    <End Role="Delivery_Status" Type="Self.Delivery_Status" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Delivery_Status">
+        <PropertyRef Name="DEL_STATUS_ID" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="DEL_STATUS_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Orders__STATUS_I__52593CB8">
+    <End Role="Payment_Statuses" Type="Self.Payment_Statuses" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Payment_Statuses">
+        <PropertyRef Name="STATUS_ID" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="STATUS_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Payments__CUSTOM__300424B4">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Payments">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="db_a98f3b_mvuyelwafitnessdbModelStoreContainer">
+    <EntitySet Name="Payments" EntityType="Self.Payments" Schema="finance" store:Type="Tables" />
+    <EntitySet Name="Delivery_Status" EntityType="Self.Delivery_Status" Schema="sales" store:Type="Tables" />
+    <EntitySet Name="Order_Item" EntityType="Self.Order_Item" Schema="sales" store:Type="Tables" />
+    <EntitySet Name="Orders" EntityType="Self.Orders" Schema="sales" store:Type="Tables" />
+    <EntitySet Name="Payment_Statuses" EntityType="Self.Payment_Statuses" Schema="sales" store:Type="Tables" />
+    <EntitySet Name="Products" EntityType="Self.Products" Schema="sales" store:Type="Tables" />
+    <EntitySet Name="Addresses" EntityType="Self.Addresses" Schema="users" store:Type="Tables" />
+    <EntitySet Name="Administrators" EntityType="Self.Administrators" Schema="users" store:Type="Tables" />
+    <EntitySet Name="Cart_Item" EntityType="Self.Cart_Item" Schema="users" store:Type="Tables" />
+    <EntitySet Name="ContactForm" EntityType="Self.ContactForm" Schema="users" store:Type="Tables" />
+    <EntitySet Name="Cust_Wishlist" EntityType="Self.Cust_Wishlist" Schema="users" store:Type="Tables" />
+    <EntitySet Name="Customer" EntityType="Self.Customer" Schema="users" store:Type="Tables" />
+    <AssociationSet Name="FK__Addresses__CUSTO__403A8C7D" Association="Self.FK__Addresses__CUSTO__403A8C7D">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cart_Item__CUSTO__3A81B327" Association="Self.FK__Cart_Item__CUSTO__3A81B327">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Cart_Item" EntitySet="Cart_Item" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cart_Item__PROD___3B75D760" Association="Self.FK__Cart_Item__PROD___3B75D760">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="Cart_Item" EntitySet="Cart_Item" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cust_Wish__CUSTO__4AB81AF0" Association="Self.FK__Cust_Wish__CUSTO__4AB81AF0">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Cust_Wishlist" EntitySet="Cust_Wishlist" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cust_Wish__PROD___4BAC3F29" Association="Self.FK__Cust_Wish__PROD___4BAC3F29">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="Cust_Wishlist" EntitySet="Cust_Wishlist" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Order_Ite__PROD___37A5467C" Association="Self.FK__Order_Ite__PROD___37A5467C">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="Order_Item" EntitySet="Order_Item" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Orders__CUSTOMER__2A4B4B5E" Association="Self.FK__Orders__CUSTOMER__2A4B4B5E">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Orders__DEL_STAT__5535A963" Association="Self.FK__Orders__DEL_STAT__5535A963">
+      <End Role="Delivery_Status" EntitySet="Delivery_Status" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Orders__STATUS_I__52593CB8" Association="Self.FK__Orders__STATUS_I__52593CB8">
+      <End Role="Payment_Statuses" EntitySet="Payment_Statuses" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Payments__CUSTOM__300424B4" Association="Self.FK__Payments__CUSTOM__300424B4">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Payments" EntitySet="Payments" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

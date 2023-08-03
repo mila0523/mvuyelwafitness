@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Mvuyelwa Fitness</title>
+
+    <!--font awsome icons-->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.0/css/sharp-solid.css">
+
+    <link runat="server" rel="shortcut icon" href="~/MV.png" type="image/x-icon" />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <!--Loader gif-->
+    <div id="loader-bg">
+        <div id="loader-inside">
+            <img src="~/assets/loader3-green.gif" alt="loading please wait..." width="100%" />
+            <center><span style="color: #6ab32e;">Loading...</span></center>
+        </div>
+    </div>
+    <!-- End Loader -->
+    <!--top NAV type 1-->
+    <nav id="topnav-mvfitness">
+        <div class="topnav-mvfitness">
+            <div class="navitems-blck">
+                <a href="/Home/Index" class="navBlock">Home</a>
+                <a href="/Home/Contact" class="navBlock">Contact us</a>
+                <a href="/Home/Index#about-sect" class="navBlock">About us</a>
+                <a href="/Store/Store" class="navBlock">Store</a>
+            </div>
+
+            <center>
+                <h3 class="logoHead center">MVUYELWA<span style="color: #6ab32e;">FITNESS</span></h3>
+            </center>
+            <button type="button" onclick="togglenav()" id="menu-btn-open" class="menu-btn-open"><i name="menu" class="fa fa-bars"></i></button>
+
+            <div class="userFunction" id="userFunction">
+                <a href="#" onclick="cartView()" class="userFunction-item"><i class="fa fa-shopping-cart"></i><span class="badge badge-pill badge-success mybadge">0</span></a>&nbsp;&nbsp;
+                <a href="/UserAccount/ViewAccount" class="userFunction-item"><i class="fa fa-user-circle"></i> </a>
+            </div>
+
+        </div>
+    </nav>
+    <!--End top NAv tye 1-->
+    <!--side nav-->
+    <nav class="navbar navbar-inverse navbar-fixed-top sidemynav" id="mysidebar" role="navigation">
+        <div>
+            <button type="button" onclick="toggleclosenav()" class="closebtn"><span>&times;</span></button>
+        </div>
+        <ul class="nav ">
+            <li class="sidebar-brand" style="padding-left: 10px; color: #6ab32e;">
+                <br />
+                &nbsp;<h4> MVUYELWAFITNESS</h4>
+                <hr style="width: 98%;position:relative; left:0px;" />
+            </li>
+            <li class="nav-link">
+                <a href="/Home/Index"><i class="fa fa-fw fa-home mr-6"></i> Home</a>
+            </li>
+            <li class="nav-link">
+                <a href="/Home/Contact"><i class="fa fa-fw fa-phone"></i> Contact us</a>
+            </li>
+            <li class="nav-link">
+                <a href="/Home/Index#about-sect"><i class="fa fa-fw fa-info-circle"></i> About us</a>
+            </li>
+            <li class="nav-link">
+                <a href="/Store/Store"><i class="fa fa-fw fa-shopping-cart"></i> Store</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /#sidebar-wrapper -->
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+
+    </div>
+    <footer class="myfooter">
+        <center>
+            <a href="#" class="footer-link">Terms & Conditions</a>&nbsp; | &nbsp;<a href="#" class="footer-link">Privacy Policy</a>
+            <br />
+            <p>Copyright &copy; @DateTime.Now.Year - Mvuyelwa fitness</p>
+        </center>
+    </footer>
+
+    <script type="text/javascript">
+        function cartView() {
+            var loggedemail = localStorage.getItem("userEmail");
+
+            if (loggedemail) {
+                window.location.href = "/Store/Cart" + "?email=" + loggedemail;
+            }
+            else {
+                alert("Please login to view your cart.")
+                window.location.href = "/UserAccount/Login";
+            }
+        }
+        
+    </script>
+    <script src="~/Scripts/main.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

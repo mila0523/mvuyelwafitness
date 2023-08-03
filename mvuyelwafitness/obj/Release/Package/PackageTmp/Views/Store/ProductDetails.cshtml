@@ -1,0 +1,41 @@
+﻿@model IEnumerable<mvuyelwafitness.Models.Product>
+@{
+    ViewBag.Title = "ProductDetails";
+
+    var prod = Model.FirstOrDefault();
+}
+
+<br />
+<div class="row">
+    <div class="col-sm-8">
+        <div class="card my-card" style="height: 65vh;">
+            <div class="card-body">
+                <div style="height: 100%; width: 20rem;">
+                    @if (prod.image == null)
+                    {
+                        <img class="card-img-top" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png" alt="image" height="100%" />
+                    }
+                    else
+                    {
+                        <img class="card-img-top" src="data:image/jpeg;base64, @prod.image" alt="image" height="100%" />
+                    }
+                </div>  
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card" style="height: 65vh;">
+            <div class="card-body">
+                <h5>@prod.Name</h5>
+                <hr />
+                <p>Description</p>
+                <p style="font-size: 13px;">@prod.Description</p>
+            </div>
+            <div class="card-foot" style="padding-left: 20px; padding-bottom: 20px">
+                <button type="button" class="mvbuttongreen-sm" id="@prod.PROD_ID" onclick="addtoCart(this.id)">Add <i class="fa fa-shopping-cart"></i></button>
+                <button type="button" class="mvbuttongreen-sm"><i class="fa fa-heart"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+

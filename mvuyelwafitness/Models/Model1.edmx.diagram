@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4e25f18f153147a1be4bdaa9bc647244" Name="Diagram1">
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Payment" Width="1.5" PointX="3" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Order_Item" Width="1.5" PointX="6" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Order" Width="1.5" PointX="3" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Product" Width="1.5" PointX="3.75" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Address" Width="1.5" PointX="3" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Administrator" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Cart_Item" Width="1.5" PointX="6" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.ContactForm" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Customer" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Payments__CUSTOM__300424B4" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Order_Ite__PROD___37A5467C" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__CUSTOMER__2A4B4B5E" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Cart_Item__PROD___3B75D760" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Addresses__CUSTO__403A8C7D" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Cart_Item__CUSTO__3A81B327" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Cust_Wishlist" Width="1.5" PointX="6" PointY="9.875" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__PROD___4BAC3F29" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__CUSTO__4AB81AF0" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Payment_Statuses" Width="1.5" PointX="8.375" PointY="3.875" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__STATUS_I__52593CB8" />
+        <EntityTypeShape EntityType="db_a98f3b_mvuyelwafitnessdbModel.Delivery_Status" Width="1.5" PointX="8.375" PointY="6.875" />
+        <AssociationConnector Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__DEL_STAT__5535A963" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="db_a98f3b_mvuyelwafitnessdbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Payment">
+    <Key>
+      <PropertyRef Name="PAYMENT_ID" />
+    </Key>
+    <Property Name="PAYMENT_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CUSTOMER_ID" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Amount" Type="Decimal" Precision="18" Scale="0" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK__Payments__CUSTOM__300424B4" FromRole="Payments" ToRole="Customer" />
+  </EntityType>
+  <EntityType Name="Order_Item">
+    <Key>
+      <PropertyRef Name="ITEM_ID" />
+    </Key>
+    <Property Name="ITEM_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ORDER_NUM" Type="Int32" Nullable="false" />
+    <Property Name="Quantity" Type="Int32" />
+    <Property Name="PROD_ID" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Product" Relationship="Self.FK__Order_Ite__PROD___37A5467C" FromRole="Order_Item" ToRole="Products" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="ORDER_NUM" />
+    </Key>
+    <Property Name="ORDER_NUM" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CUSTOMER_ID" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="Total" Type="Decimal" Precision="18" Scale="0" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK__Orders__CUSTOMER__2A4B4B5E" FromRole="Orders" ToRole="Customer" />
+    <Property Name="STATUS_ID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Payment_Statuses" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__STATUS_I__52593CB8" FromRole="Order" ToRole="Payment_Statuses" />
+    <Property Name="DEL_STATUS_ID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Delivery_Status" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__DEL_STAT__5535A963" FromRole="Order" ToRole="Delivery_Status" />
+    <Property Name="SESSION_ID" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="PROD_ID" />
+    </Key>
+    <Property Name="PROD_ID" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Category" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Nutritional_info" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Order_Item" Relationship="Self.FK__Order_Ite__PROD___37A5467C" FromRole="Products" ToRole="Order_Item" />
+    <NavigationProperty Name="Cart_Item" Relationship="Self.FK__Cart_Item__PROD___3B75D760" FromRole="Products" ToRole="Cart_Item" />
+    <NavigationProperty Name="Cust_Wishlist" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__PROD___4BAC3F29" FromRole="Product" ToRole="Cust_Wishlist" />
+  </EntityType>
+  <EntityType Name="Address">
+    <Key>
+      <PropertyRef Name="ADDRESS_ID" />
+    </Key>
+    <Property Name="ADDRESS_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CUSTOMER_ID" Type="Int32" Nullable="false" />
+    <Property Name="Street_add" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <Property Name="Town_City" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Province" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Zip" Type="String" MaxLength="10" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK__Addresses__CUSTO__403A8C7D" FromRole="Addresses" ToRole="Customer" />
+  </EntityType>
+  <EntityType Name="Administrator">
+    <Key>
+      <PropertyRef Name="USER_ID" />
+    </Key>
+    <Property Name="USER_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Reset_key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Date_Added" Type="DateTime" Precision="3" />
+    <Property Name="Phone" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Cart_Item">
+    <Key>
+      <PropertyRef Name="CART_ITEM_ID" />
+    </Key>
+    <Property Name="CART_ITEM_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CUSTOMER_ID" Type="Int32" Nullable="false" />
+    <Property Name="PROD_ID" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+    <Property Name="Quantity" Type="Int32" />
+    <NavigationProperty Name="Product" Relationship="Self.FK__Cart_Item__PROD___3B75D760" FromRole="Cart_Item" ToRole="Products" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK__Cart_Item__CUSTO__3A81B327" FromRole="Cart_Item" ToRole="Customer" />
+  </EntityType>
+  <EntityType Name="ContactForm">
+    <Key>
+      <PropertyRef Name="CONTACT_ID" />
+    </Key>
+    <Property Name="CONTACT_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CUSTOMER_ID" />
+    </Key>
+    <Property Name="CUSTOMER_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Reset_key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Date_Created" Type="DateTime" Precision="3" />
+    <Property Name="Phone" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Payments" Relationship="Self.FK__Payments__CUSTOM__300424B4" FromRole="Customer" ToRole="Payments" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__CUSTOMER__2A4B4B5E" FromRole="Customer" ToRole="Orders" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK__Addresses__CUSTO__403A8C7D" FromRole="Customer" ToRole="Addresses" />
+    <NavigationProperty Name="Cart_Item" Relationship="Self.FK__Cart_Item__CUSTO__3A81B327" FromRole="Customer" ToRole="Cart_Item" />
+    <NavigationProperty Name="Cust_Wishlist" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__CUSTO__4AB81AF0" FromRole="Customer" ToRole="Cust_Wishlist" />
+  </EntityType>
+  <Association Name="FK__Payments__CUSTOM__300424B4">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Payments">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Order_Ite__PROD___37A5467C">
+    <End Role="Products" Type="Self.Product" Multiplicity="0..1" />
+    <End Role="Order_Item" Type="Self.Order_Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="PROD_ID" />
+      </Principal>
+      <Dependent Role="Order_Item">
+        <PropertyRef Name="PROD_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Orders__CUSTOMER__2A4B4B5E">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cart_Item__PROD___3B75D760">
+    <End Role="Products" Type="Self.Product" Multiplicity="0..1" />
+    <End Role="Cart_Item" Type="Self.Cart_Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="PROD_ID" />
+      </Principal>
+      <Dependent Role="Cart_Item">
+        <PropertyRef Name="PROD_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Addresses__CUSTO__403A8C7D">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Addresses" Type="Self.Address" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cart_Item__CUSTO__3A81B327">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+    <End Role="Cart_Item" Type="Self.Cart_Item" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Cart_Item">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="db_a98f3b_mvuyelwafitnessdbEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Payments" EntityType="Self.Payment" />
+    <EntitySet Name="Order_Item" EntityType="Self.Order_Item" />
+    <EntitySet Name="Orders" EntityType="Self.Order" />
+    <EntitySet Name="Products" EntityType="Self.Product" />
+    <EntitySet Name="Addresses" EntityType="Self.Address" />
+    <EntitySet Name="Administrators" EntityType="Self.Administrator" />
+    <EntitySet Name="Cart_Item" EntityType="Self.Cart_Item" />
+    <EntitySet Name="ContactForms" EntityType="Self.ContactForm" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <AssociationSet Name="FK__Payments__CUSTOM__300424B4" Association="Self.FK__Payments__CUSTOM__300424B4">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Payments" EntitySet="Payments" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Order_Ite__PROD___37A5467C" Association="Self.FK__Order_Ite__PROD___37A5467C">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="Order_Item" EntitySet="Order_Item" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Orders__CUSTOMER__2A4B4B5E" Association="Self.FK__Orders__CUSTOMER__2A4B4B5E">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cart_Item__PROD___3B75D760" Association="Self.FK__Cart_Item__PROD___3B75D760">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="Cart_Item" EntitySet="Cart_Item" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Addresses__CUSTO__403A8C7D" Association="Self.FK__Addresses__CUSTO__403A8C7D">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cart_Item__CUSTO__3A81B327" Association="Self.FK__Cart_Item__CUSTO__3A81B327">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Cart_Item" EntitySet="Cart_Item" />
+    </AssociationSet>
+    <EntitySet Name="Cust_Wishlist" EntityType="db_a98f3b_mvuyelwafitnessdbModel.Cust_Wishlist" />
+    <AssociationSet Name="FK__Cust_Wish__PROD___4BAC3F29" Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__PROD___4BAC3F29">
+      <End Role="Product" EntitySet="Products" />
+      <End Role="Cust_Wishlist" EntitySet="Cust_Wishlist" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Cust_Wish__CUSTO__4AB81AF0" Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__CUSTO__4AB81AF0">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Cust_Wishlist" EntitySet="Cust_Wishlist" />
+    </AssociationSet>
+    <EntitySet Name="Payment_Statuses" EntityType="db_a98f3b_mvuyelwafitnessdbModel.Payment_Statuses" />
+    <AssociationSet Name="FK__Orders__STATUS_I__52593CB8" Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__STATUS_I__52593CB8">
+      <End Role="Payment_Statuses" EntitySet="Payment_Statuses" />
+      <End Role="Order" EntitySet="Orders" />
+    </AssociationSet>
+    <EntitySet Name="Delivery_Status" EntityType="db_a98f3b_mvuyelwafitnessdbModel.Delivery_Status" />
+    <AssociationSet Name="FK__Orders__DEL_STAT__5535A963" Association="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__DEL_STAT__5535A963">
+      <End Role="Delivery_Status" EntitySet="Delivery_Status" />
+      <End Role="Order" EntitySet="Orders" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Cust_Wishlist">
+    <Key>
+      <PropertyRef Name="LIST_ID" />
+    </Key>
+    <Property Name="LIST_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CUSTOMER_ID" Type="Int32" Nullable="false" />
+    <Property Name="PROD_ID" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Product" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__PROD___4BAC3F29" FromRole="Cust_Wishlist" ToRole="Product" />
+    <NavigationProperty Name="Customer" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Cust_Wish__CUSTO__4AB81AF0" FromRole="Cust_Wishlist" ToRole="Customer" />
+  </EntityType>
+  <Association Name="FK__Cust_Wish__PROD___4BAC3F29">
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Product" Role="Product" Multiplicity="1" />
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Cust_Wishlist" Role="Cust_Wishlist" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="PROD_ID" />
+      </Principal>
+      <Dependent Role="Cust_Wishlist">
+        <PropertyRef Name="PROD_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Cust_Wish__CUSTO__4AB81AF0">
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Customer" Role="Customer" Multiplicity="1" />
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Cust_Wishlist" Role="Cust_Wishlist" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="Cust_Wishlist">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Payment_Statuses">
+    <Key>
+      <PropertyRef Name="STATUS_ID" />
+    </Key>
+    <Property Name="STATUS_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Orders" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__STATUS_I__52593CB8" FromRole="Payment_Statuses" ToRole="Order" />
+  </EntityType>
+  <Association Name="FK__Orders__STATUS_I__52593CB8">
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Payment_Statuses" Role="Payment_Statuses" Multiplicity="1" />
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Order" Role="Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Payment_Statuses">
+        <PropertyRef Name="STATUS_ID" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="STATUS_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Delivery_Status">
+    <Key>
+      <PropertyRef Name="DEL_STATUS_ID" />
+    </Key>
+    <Property Name="DEL_STATUS_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Orders" Relationship="db_a98f3b_mvuyelwafitnessdbModel.FK__Orders__DEL_STAT__5535A963" FromRole="Delivery_Status" ToRole="Order" />
+  </EntityType>
+  <Association Name="FK__Orders__DEL_STAT__5535A963">
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Delivery_Status" Role="Delivery_Status" Multiplicity="1" />
+    <End Type="db_a98f3b_mvuyelwafitnessdbModel.Order" Role="Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Delivery_Status">
+        <PropertyRef Name="DEL_STATUS_ID" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="DEL_STATUS_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

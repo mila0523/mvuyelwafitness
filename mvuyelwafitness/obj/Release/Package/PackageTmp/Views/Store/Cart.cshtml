@@ -1,0 +1,221 @@
+﻿@model mvuyelwafitness.Models.CartVm
+@{
+    ViewBag.Title = "Cart";
+
+    var cust = Model.myCustomer[0];
+    var cartItems = Model.Cart;
+    var products = Model.Prod;
+
+    decimal orderTotal = 0;
+}
+
+<link rel="stylesheet" href="~/Content/shop.css" />
+
+<section>
+    <div class="row" style="z-index: 1;">
+        <div class="col-sm-12">
+            <br />
+            <center>
+                <h5>Your Cart <i class="fa fa-shopping cart"></i></h5>
+            </center>
+            <hr />
+            <table class="table table-sm">
+                <thead class="bg-success text-light" style=" font-size: 14px;">
+                    <tr>
+                        <th>Descritpion</th>
+                        <th class="text-center qtyHead">Qauntity</th>
+                        <th>Price (R)</th>
+                        <th>line Total</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var itm in cartItems)
+                    {
+
+                        decimal lineT = 0;
+                        foreach (var prod in products.Where(p => p.PROD_ID == itm.PROD_ID))
+                        {
+                            lineT = Convert.ToDecimal(itm.Quantity) * Convert.ToDecimal(prod.Price);
+
+                            <tr class="mycartrow">
+                                @if (prod.Name.Length > 10)
+                                {
+                                    <td style="font-size: 12px;">@prod.Name</td>
+                                }
+                                else
+                                {
+                                    <td>@prod.Name</td>
+                                }
+                                <td>
+                                    <center>
+                                        <div class="input-group " style="width: 100%;">
+                                            <button onclick="modQty(this.id)" class="btn btn-sm btn-secondary float-left" id="down-@prod.PROD_ID" style="font-size: 10px;"><i class="fa fa-chevron-left"></i></button>
+
+                                            <input type="text" class="text-center" disabled id="qty-@prod.PROD_ID" style="width: 35px;" value="@itm.Quantity" />
+
+                                            <button onclick="modQty(this.id)" class="btn btn-sm btn-secondary float-right" id="up-@prod.PROD_ID" style="font-size: 10px;"><i class="fa fa-chevron-right"></i></button>
+                                        </div>
+                                    </center>
+                                </td>
+                                <td id="pr-@prod.PROD_ID">@prod.Price</td>
+                                <td id="lt-@prod.PROD_ID">R @lineT</td>
+                                <td><center><a href="#" onclick="delItem(this.id)" id="@prod.PROD_ID" class="removebtn">&times;</a></center></td>
+                            </tr>
+
+                        }
+
+                        orderTotal += lineT;
+                    }
+                </tbody>
+                <tfoot style="background-color: #6ab32e; font-size: 12px; height: 25px;" class="text-light">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><b>Cart Total:</b></td>
+                        <td><b>R @orderTotal </b></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            @if (cartItems.Count == 0)
+            {
+                //dont show the checkout button
+                <p>Your cart is empty :(</p>
+                <a href="/Store/Store" type="button" class="btn mvbuttongreen-sm">Start Shopping <i class="fa fa-shopping-cart"></i></a>
+            }
+            else
+            {
+                <button type="button" onclick="@("window.location.href='" + @Url.Action("Checkout", "Store", new { custId = cust.CUSTOMER_ID}) + "'")" class="mvbuttongreen">Checkout</button>
+            }
+        </div>
+    </div>
+    <div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-header">
+                <strong class="mr-auto">Message</strong>
+                <small>Now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                <p id="mytoastMessage"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    function showLoader() {
+        var myDiv = document.getElementById('loader-bg');
+        myDiv.style.opacity = 1;
+        myDiv.style.zIndex = 9999;
+    }
+    function modQty(btnId) {
+        //replace all except numbers : replace(/[^0-9]/g, "");
+        var id = btnId.replace(/(up-|down-)/g, "");
+      
+        var lineTotal = document.getElementById(`lt-${id}`)
+        var qtyInput = document.getElementById(`qty-${id}`);
+        var xy = document.getElementById(`qty-${id}`).value;
+        var currentQty = parseFloat(xy);
+        var prinput = document.getElementById(`pr-${id}`);
+        var lineT = parseFloat(lineTotal.innerHTML.replace(/(R| )/g, ""));
+        var price = parseFloat(prinput.innerHTML);
+        var newQty = 0;
+        var newlt = 0;
+
+       
+
+        if (btnId.includes("down-")) {
+            newQty = currentQty - 1;
+            newlt = newQty * price;
+
+            if (newQty < 1) {
+                qtyInput.value = 0;
+                delItem(id)
+                lineTotal.innerHTML = "R 00.00";
+
+                showLoader();
+                
+            } else {
+                qtyInput.value = newQty;
+                updateItem(id, newQty);
+                lineTotal.innerHTML = "R " + newlt.toFixed(2);
+                showLoader();
+            }
+        }
+        else if (btnId.includes("up-")) {
+            newQty = currentQty + 1;
+            newlt = newQty * price;
+
+            qtyInput.value = newQty;
+            updateItem(id, newQty);
+            lineTotal.innerHTML = "R " + newlt.toFixed(2);
+
+            showLoader();
+        }
+        else {
+            $('#liveToast').toast('show')
+            $("#mytoastMessage").text("Failed");
+        }
+
+    }
+
+    function updateItem(id, qty) {
+        var email = localStorage.getItem("userEmail");
+
+         $.post({
+            url: "@Url.Action("modQuantity", "Store")",
+            data: {
+                email: email,
+                productID: id,
+                newQty: qty
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+
+                if (msg.message == "Qty Changed.") {
+                    window.location.reload();
+                }
+                else {
+                    $('#liveToast').toast('show')
+                    $("#mytoastMessage").text(msg.message);
+                }
+            },
+            error: (data) => {
+                let msg = JSON.parse(data);
+            }
+        });
+    }
+
+
+    function delItem(id) {
+        var email = localStorage.getItem("userEmail");
+        showLoader();
+        $.post({
+            url: "@Url.Action("RemoveFromCart", "Store")",
+            data: {
+                email: email,
+                productID: id,
+            },
+            success: (data) => {
+                let msg = JSON.parse(data);
+
+                if (msg.message == "success") {
+                    window.location.reload();
+                }
+                else {
+                    $('#liveToast').toast('show')
+                    $("#mytoastMessage").text(msg.message);
+                }
+            },
+            error: (data) => {
+                let msg = JSON.parse(data);
+                $('#liveToast').toast('show')
+                $("#mytoastMessage").text(msg.message);
+            }
+        });
+    }
+</script>
